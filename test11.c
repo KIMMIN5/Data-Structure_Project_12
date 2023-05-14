@@ -11,7 +11,7 @@ typedef struct{
 } ArrayListType ;
 
 void error(char *message) {
-    fprintf(stderr, "%s\n", message) ;
+    fprintf(stderr, "\n%s\n", message) ;
 }
 
 void init(ArrayListType *Lptr) {
@@ -27,16 +27,20 @@ int is_full(ArrayListType *Lptr) {
 }
 
 void insert(ArrayListType *Lptr, int pos, element item) {
+    int cnt = 0 ;
     if(is_full(Lptr) || pos < 0 || pos > Lptr -> size) {
-        error("List is Full") ;
+        error("List is Full\n") ;
     }
     else {
         for(int i=(Lptr->size-1); i>=pos; i--) {
             Lptr -> array[i+1] = Lptr -> array[i] ;
+            cnt++ ;
         }
         Lptr -> array[pos] = item ;
         Lptr -> size++ ;
     }
+    printf("\nMove : %d\n", cnt) ;
+    printf("Insert (value, position) : %d %d\n", item, pos) ;
 }
 
 element delete(ArrayListType *Lptr, int pos) {
@@ -47,12 +51,15 @@ element delete(ArrayListType *Lptr, int pos) {
         error("List is Empty") ;
     }
     else {
+        item = Lptr -> array[pos] ;
 		for(int i=pos; i<(Lptr->size-1); i++) {
 			Lptr -> array[i] = Lptr -> array[i+1] ;
             cnt++ ;
 		}
 		Lptr -> size-- ;
 	}
+    printf("Delete : %d\n", item) ;
+    printf("Move : %d\n", cnt) ;
     return item ;
 }
         
@@ -71,7 +78,7 @@ int main() {
     init(&L) ;
 
     while(1) {
-        printf("Menu\n") ;
+        printf("\nMenu\n") ;
         printf("1. Insert\n") ;
         printf("2. Delete\n") ;
         printf("3. Print\n") ;
@@ -81,17 +88,18 @@ int main() {
         scanf("%d", &insert_menu) ;
 
         if(insert_menu == 1) {
-            int n, p ;
+            element n ; 
+            int p ;
             printf("Enter the number and position : ") ;
             scanf("%d %d", &n, &p) ;
-            if(L.size == 0) {
-                while(p != 0) {
-                    printf("List size is zero. Please enter again(number, postion) : ") ;
-                    scanf("%d %d", &n, &p) ;
-                }
+            if(L.size == 0 && p == 0) {
+                insert(&L, p, n) ;
+            }
+            else if(L.size != 0) {
+                insert(&L, p, n) ;
             }
             else {
-                insert(&L, n, p) ;
+                error("List size is zero. Please enter again(number, position) with position 0") ;
             }
         }
         else if(insert_menu == 2) {
